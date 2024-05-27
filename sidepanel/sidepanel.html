@@ -2,17 +2,28 @@
 <html>
 
 <head>
-  <title>My Google side panel extension</title>
+  <title>Prevent Redirect</title>
   <link rel="stylesheet" href="sidepanel.css">
 </head>
 
 <body>
-  <h1>Beta</h1>
-  <p></p>
-  <label class="switch">
-    <input id="input" type="checkbox">
-    <span class="slider round"></span>
-  </label>
+  <h1 class="title">Prevent Redirect</h1>
+  <p class="quote">There's still a great day ahead</p>
+  <div class="detail">
+    <div class="option">
+      <span class="label" title="What I need to do?">Type Regex string</span>
+      <input type="text">
+
+    </div>
+    <div class="option">
+      <span class="label" title="Just want to see what's going on.">Always get Redirects</span>
+      <label class="switch">
+        <input id="switch" type="checkbox">
+        <span class="slider round"></span>
+      </label>
+
+    </div>
+  </div>
   <div id="cont" class="container">
     <div id="text" class="text"></div>
     <div id="btn" class="img">
@@ -20,10 +31,14 @@
         src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBVcGxvYWRlZCB0bzogU1ZHIFJlcG8sIHd3dy5zdmdyZXBvLmNvbSwgR2VuZXJhdG9yOiBTVkcgUmVwbyBNaXhlciBUb29scyAtLT4NCjxzdmcgZmlsbD0iIzAwMDAwMCIgaGVpZ2h0PSI4MDBweCIgd2lkdGg9IjgwMHB4IiB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIA0KCSB2aWV3Qm94PSIwIDAgNDg4LjMgNDg4LjMiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPGc+DQoJCTxwYXRoIGQ9Ik0zMTQuMjUsODUuNGgtMjI3Yy0yMS4zLDAtMzguNiwxNy4zLTM4LjYsMzguNnYzMjUuN2MwLDIxLjMsMTcuMywzOC42LDM4LjYsMzguNmgyMjdjMjEuMywwLDM4LjYtMTcuMywzOC42LTM4LjZWMTI0DQoJCQlDMzUyLjc1LDEwMi43LDMzNS40NSw4NS40LDMxNC4yNSw4NS40eiBNMzI1Ljc1LDQ0OS42YzAsNi40LTUuMiwxMS42LTExLjYsMTEuNmgtMjI3Yy02LjQsMC0xMS42LTUuMi0xMS42LTExLjZWMTI0DQoJCQljMC02LjQsNS4yLTExLjYsMTEuNi0xMS42aDIyN2M2LjQsMCwxMS42LDUuMiwxMS42LDExLjZWNDQ5LjZ6Ii8+DQoJCTxwYXRoIGQ9Ik00MDEuMDUsMGgtMjI3Yy0yMS4zLDAtMzguNiwxNy4zLTM4LjYsMzguNmMwLDcuNSw2LDEzLjUsMTMuNSwxMy41czEzLjUtNiwxMy41LTEzLjVjMC02LjQsNS4yLTExLjYsMTEuNi0xMS42aDIyNw0KCQkJYzYuNCwwLDExLjYsNS4yLDExLjYsMTEuNnYzMjUuN2MwLDYuNC01LjIsMTEuNi0xMS42LDExLjZjLTcuNSwwLTEzLjUsNi0xMy41LDEzLjVzNiwxMy41LDEzLjUsMTMuNWMyMS4zLDAsMzguNi0xNy4zLDM4LjYtMzguNg0KCQkJVjM4LjZDNDM5LjY1LDE3LjMsNDIyLjM1LDAsNDAxLjA1LDB6Ii8+DQoJPC9nPg0KPC9nPg0KPC9zdmc+">
       <img class="swap" id="done"
         src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBVcGxvYWRlZCB0bzogU1ZHIFJlcG8sIHd3dy5zdmdyZXBvLmNvbSwgR2VuZXJhdG9yOiBTVkcgUmVwbyBNaXhlciBUb29scyAtLT4NCjxzdmcgZmlsbD0iIzAwMDAwMCIgaGVpZ2h0PSI4MDBweCIgd2lkdGg9IjgwMHB4IiB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIA0KCSB2aWV3Qm94PSIwIDAgNTIgNTIiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPHBhdGggZD0iTTI2LDBDMTEuNjY0LDAsMCwxMS42NjMsMCwyNnMxMS42NjQsMjYsMjYsMjZzMjYtMTEuNjYzLDI2LTI2UzQwLjMzNiwwLDI2LDB6IE0yNiw1MEMxMi43NjcsNTAsMiwzOS4yMzMsMiwyNg0KCQlTMTIuNzY3LDIsMjYsMnMyNCwxMC43NjcsMjQsMjRTMzkuMjMzLDUwLDI2LDUweiIvPg0KCTxwYXRoIGQ9Ik0zOC4yNTIsMTUuMzM2bC0xNS4zNjksMTcuMjlsLTkuMjU5LTcuNDA3Yy0wLjQzLTAuMzQ1LTEuMDYxLTAuMjc0LTEuNDA1LDAuMTU2Yy0wLjM0NSwwLjQzMi0wLjI3NSwxLjA2MSwwLjE1NiwxLjQwNg0KCQlsMTAsOEMyMi41NTksMzQuOTI4LDIyLjc4LDM1LDIzLDM1YzAuMjc2LDAsMC41NTEtMC4xMTQsMC43NDgtMC4zMzZsMTYtMThjMC4zNjctMC40MTIsMC4zMy0xLjA0NS0wLjA4My0xLjQxMQ0KCQlDMzkuMjUxLDE0Ljg4NSwzOC42MiwxNC45MjIsMzguMjUyLDE1LjMzNnoiLz4NCjwvZz4NCjwvc3ZnPg==">
-    </div>  
+    </div>
   </div>
   <script src="sidepanel.js"></script>
-  <footer id="footer"><b>Create by DucHoH</b></footer>
+  <footer id="footer">
+    <a href="https://github.com/27hohuuduc/PreventRedirect">Repository</a>
+    <a href="https://github.com/27hohuuduc/PreventRedirect?tab=Apache-2.0-1-ov-file#readme">License</a>
+    <p>Made by DucHo</p>
+  </footer>
 </body>
 
 </html>

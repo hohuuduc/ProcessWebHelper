@@ -1,8 +1,8 @@
 {
-    "name": "G-7",
+    "name": "Prevent Redirect",
     "version": "0.1",
     "manifest_version": 3,
-    "description": "Uses the chrome.declarativeNetRequest API to block requests.",
+    "description": "Block requests with chrome.declarativeNetRequest.",
     "background": {
         "service_worker": "service_worker.js"
     },
@@ -17,16 +17,13 @@
         "sidePanel",
         "webRequest",
         "tabs",
-        "storage",
-        "nativeMessaging",
-        "activeTab",
-        "scripting"
+        "storage"
     ],
     "action": {
         "default_title": "Click here!"
     },
     "side_panel": {
-        "default_path": "sidepanel.html"
+        "default_path": "sidepanel/sidepanel.html"
     },
     "commands": {
         "_execute_action": {

@@ -1,6 +1,8 @@
 const RULEID = 2
 const KEY = "state"
 
+let isRun = false
+
 if (typeof browser === "undefined") {
   var browser = chrome;
 }
@@ -13,31 +15,27 @@ browser.tabs.onActivated.addListener((info) => {
 
 browser.tabs.onUpdated.addListener((tabId, info, tab) => {
   if (info.status && info.status === "complete") {
-    if (/^.*tracking.fujinet.net:5000.*issues.*$/.test(tab.url)) {
-      browser.scripting.insertCSS({
-        target: { tabId: tabId },
-        files: ['style.css']
-      })
-      browser.scripting.executeScript({
-        target: { tabId: tabId },
-        files: ['script.js']
-      })
-    }
     handle()
   }
 })
 
-browser.storage.onChanged.addListener((change, areaName) => {
-  if (change.state) {
-    console.log(change.state)
+chrome.runtime.onConnect.addListener(port => {
+  if (port.name === 'sidepanel') {
+    isRun = true
     handle()
+    port.onDisconnect.addListener(async () => {
+      isRun = false
+      handle()
+    })
   }
 })
 
 const handle = async () => {
-  const store = await browser.storage.local.get(KEY)
+  if (!isRun)
+    return
+  //const store = await browser.storage.local.get(KEY)
   const info = await browser.tabs.query({ active: true, lastFocusedWindow: true });
-  if (store && store.state && info[0] && info[0].url) {
+  if (info[0] && info[0].url) {
     browser.declarativeNetRequest.updateDynamicRules({
       addRules: [{
         "id": RULEID,
