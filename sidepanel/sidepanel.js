@@ -6,6 +6,13 @@ if (typeof browser === "undefined")
 window.onload = async () => {
     chrome.runtime.connect({ name: 'sidepanel' })
 
+    const store = await browser.storage.local.get("regex") //store ? store.state : false
+    const regex = document.getElementById("regex")
+    regex.value = store.regex
+    regex.onchange = () => {
+        browser.storage.local.set({regex: regex.value})
+    }
+
     const copy = document.getElementById("copy")
     const done = document.getElementById("done")
     const text = document.getElementById("text")
@@ -16,10 +23,6 @@ window.onload = async () => {
         copy.className = "swap"
         done.className = ""
     }
-
-    browser.storage.local.set({ state: true })
-
-    //const store = await browser.storage.local.get("state") //store ? store.state : false
 
     browser.storage.onChanged.addListener(async (change, areaName) => {
         if (change.url) {

@@ -1,5 +1,4 @@
 const RULEID = 2
-const KEY = "state"
 
 let isRun = false
 
@@ -31,11 +30,9 @@ chrome.runtime.onConnect.addListener(port => {
 })
 
 const handle = async () => {
-  if (!isRun)
-    return
-  //const store = await browser.storage.local.get(KEY)
+  const store = await browser.storage.local.get("regex")
   const info = await browser.tabs.query({ active: true, lastFocusedWindow: true });
-  if (info[0] && info[0].url) {
+  if (isRun && info[0] && info[0].url) {
     browser.declarativeNetRequest.updateDynamicRules({
       addRules: [{
         "id": RULEID,
@@ -47,7 +44,7 @@ const handle = async () => {
           }
         },
         "condition": {
-          "urlFilter": "pages/menu/program",
+          "urlFilter": store.regex,
           "resourceTypes": [
             "main_frame"
           ]
