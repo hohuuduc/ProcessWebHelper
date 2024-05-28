@@ -8,7 +8,7 @@ window.onload = async () => {
 
     const store = await browser.storage.local.get("regex")
     const regex = document.getElementById("regex")
-    regex.value = store.regex
+    regex.value = store.regex ? store.regex : ""
     regex.onchange = () => {
         browser.storage.local.set({regex: regex.value})
     }

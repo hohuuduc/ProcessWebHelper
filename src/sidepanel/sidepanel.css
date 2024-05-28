@@ -27,11 +27,10 @@ body {
 
 .option {
     display: flex;
-    margin-bottom: 10px;
 }
 
 .label {
-    min-width: 120px;
+    min-width: 80px;
     margin: auto 10px;
     font-size: 15px;
 }
@@ -42,16 +41,6 @@ input {
     border: solid 1px #ccc;
     border-radius: 6px;
     padding: 5px 7px;
-}
-
-#footer {
-    position: absolute;
-    bottom: 0;
-    display: flex;
-}
-
-#footer * {
-    margin-left: 10px;
 }
 
 .container {
@@ -89,4 +78,8 @@ input {
 
 .swap {
     transform: scale(0);
+}
+
+footer {
+    text-align: end;
 }
