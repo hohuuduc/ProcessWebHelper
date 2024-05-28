@@ -1,6 +1,7 @@
 const RULEID = 2
 
 let isRun = false
+let currentTab
 
 if (typeof browser === "undefined") {
   var browser = chrome;
@@ -32,7 +33,13 @@ chrome.runtime.onConnect.addListener(port => {
 const handle = async () => {
   const store = await browser.storage.local.get("regex")
   const info = await browser.tabs.query({ active: true, lastFocusedWindow: true });
-  if (isRun && info[0] && info[0].url) {
+  if (isRun && info[0]) {
+    currentTab = info[0].url
+  }
+  else {
+    currentTab = null
+  }
+  if (currentTab) {
     browser.declarativeNetRequest.updateDynamicRules({
       addRules: [{
         "id": RULEID,
@@ -40,7 +47,7 @@ const handle = async () => {
         "action": {
           "type": "redirect",
           "redirect": {
-            "url": info[0].url
+            "url": currentTab
           }
         },
         "condition": {
@@ -65,13 +72,14 @@ const handle = async () => {
 }
 
 browser.webRequest.onBeforeRedirect.addListener(
-  (e) => {
-    if (e.url.includes("/pages/menu/program")) {
-      if (e.redirectUrl.includes("pages")) {
+  async (e) => {
+    const store = await browser.storage.local.get("regex")
+    if (e.url.includes(store.regex)) {
+      if (e.redirectUrl === currentTab) {
         fetch(e.url)
         return
       }
-      if (e.redirectUrl.includes("application")) {
+      if (e.redirectUrl) {
         browser.storage.local.set({ url: e.redirectUrl })
       }
     }

@@ -6,7 +6,7 @@ if (typeof browser === "undefined")
 window.onload = async () => {
     chrome.runtime.connect({ name: 'sidepanel' })
 
-    const store = await browser.storage.local.get("regex") //store ? store.state : false
+    const store = await browser.storage.local.get("regex")
     const regex = document.getElementById("regex")
     regex.value = store.regex
     regex.onchange = () => {
@@ -17,9 +17,8 @@ window.onload = async () => {
     const done = document.getElementById("done")
     const text = document.getElementById("text")
     const cont = document.getElementById("cont")
-    const switch_ = document.getElementById("switch")
     document.getElementById("btn").onclick = () => {
-        navigator.clipboard.writeText(text.innerHTML.substring(text.innerHTML.indexOf("?RootEndPoint")).replaceAll("&amp;", "&"))
+        navigator.clipboard.writeText(new URL(text.innerHTML).search.replaceAll("&amp;", "&"))
         copy.className = "swap"
         done.className = ""
     }
