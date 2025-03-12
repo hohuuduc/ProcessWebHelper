@@ -1,6 +1,6 @@
 {
     "name": "Prevent Redirect",
-    "version": "0.1",
+    "version": "1.0",
     "manifest_version": 3,
     "description": "Block requests with chrome.declarativeNetRequest.",
     "background": {

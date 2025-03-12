@@ -4,7 +4,10 @@ if (typeof browser === "undefined")
     var browser = chrome;
 
 window.onload = async () => {
-    chrome.runtime.connect({ name: 'sidepanel' })
+    const port = chrome.runtime.connect({ name: 'sidepanel' })
+    port.onDisconnect.addListener(() => {
+        window.close()
+    });
 
     const store = await browser.storage.local.get("regex")
     const regex = document.getElementById("regex")
