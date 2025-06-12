@@ -59,7 +59,7 @@ const handle = async () => {
       }],
       removeRuleIds: [RULEID]
     }, () => {
-      console.log("Rule added.")
+      console.debug("Rule added.")
     })
   }
   else
@@ -67,7 +67,7 @@ const handle = async () => {
       addRules: null,
       removeRuleIds: [RULEID]
     }, () => {
-      console.log("Rule removed.")
+      console.debug("Rule removed.")
     })
 }
 
@@ -88,3 +88,10 @@ browser.webRequest.onBeforeRedirect.addListener(
   { urls: ["<all_urls>"] },
   ["responseHeaders", "extraHeaders"]
 )
+
+//Pong
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === 'ping') {
+        console.log("Pong");
+    }
+});

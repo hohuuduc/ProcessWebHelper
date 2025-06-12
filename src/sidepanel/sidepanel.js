@@ -5,15 +5,11 @@ if (typeof browser === "undefined")
 
 window.onload = async () => {
     const port = chrome.runtime.connect({ name: 'sidepanel' })
-    port.onDisconnect.addListener(() => {
-        window.close()
-    });
-
     const store = await browser.storage.local.get("regex")
     const regex = document.getElementById("regex")
     regex.value = store.regex ? store.regex : ""
     regex.onchange = () => {
-        browser.storage.local.set({regex: regex.value})
+        browser.storage.local.set({ regex: regex.value })
     }
 
     const copy = document.getElementById("copy")
@@ -34,4 +30,9 @@ window.onload = async () => {
             done.className = "swap"
         }
     })
+
+    //Keep live
+    setInterval(() => {
+        chrome.runtime.sendMessage({ type: 'ping' });
+    }, 25000);
 }
