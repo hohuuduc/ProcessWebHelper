@@ -5,7 +5,7 @@ if (typeof browser === "undefined")
 
 window.onload = async () => {
     // Signal that the extension is active when the side panel is open.
-    browser.storage.session.set({ isRun: true });
+    browser.runtime.connect({ name: 'mySidepanel' });
     const store = await browser.storage.local.get("regex")
     const regex = document.getElementById("regex")
     regex.value = store.regex ? store.regex : ""
@@ -33,8 +33,3 @@ window.onload = async () => {
         }
     })
 }
-
-window.onunload = () => {
-    // Signal that the extension is inactive when the side panel is closed.
-    browser.storage.session.set({ isRun: false, currentTab: null });
-};

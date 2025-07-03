@@ -4,11 +4,16 @@ if (typeof browser === "undefined") {
   var browser = chrome;
 }
 
-// Initialize state on startup.
-// `session` storage is used because the state is not needed across browser sessions.
-browser.storage.session.set({ isRun: false, currentTab: null });
-
 browser.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
+
+browser.runtime.onConnect.addListener(function (port) {
+  if (port.name === 'mySidepanel') {
+    browser.storage.session.set({ isRun: true });
+    port.onDisconnect.addListener(async () => {
+      browser.storage.session.set({ isRun: false });
+    });
+  }
+});
 
 // These listeners will trigger rule updates based on tab navigation.
 browser.tabs.onActivated.addListener((info) => {
