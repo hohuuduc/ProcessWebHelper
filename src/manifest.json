@@ -1,8 +1,8 @@
 {
-    "name": "Prevent Redirect",
-    "version": "1.4",
+    "name": "Process web helper",
+    "version": "1.5",
     "manifest_version": 3,
-    "description": "Block requests with chrome.declarativeNetRequest.",
+    "description": "Block requests.",
     "background": {
         "service_worker": "service_worker.js"
     },

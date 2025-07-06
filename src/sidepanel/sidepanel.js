@@ -3,9 +3,15 @@ const RULEID = 2
 if (typeof browser === "undefined")
     var browser = chrome;
 
+function connect() {
+    const port = browser.runtime.connect({ name: 'mySidepanel' });
+    port.onDisconnect.addListener(() => {
+        connect()
+    });
+}
+
 window.onload = async () => {
-    // Signal that the extension is active when the side panel is open.
-    browser.runtime.connect({ name: 'mySidepanel' });
+    connect();
     const store = await browser.storage.local.get("regex")
     const regex = document.getElementById("regex")
     regex.value = store.regex ? store.regex : ""
@@ -24,7 +30,7 @@ window.onload = async () => {
         done.className = ""
     }
 
-    browser.storage.onChanged.addListener(async (change, areaName) => {
+    browser.storage.local.onChanged.addListener(async (change, areaName) => {
         if (change.url) {
             text.innerHTML = change.url.newValue
             cont.style.visibility = "visible"
