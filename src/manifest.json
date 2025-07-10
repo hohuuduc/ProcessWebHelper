@@ -1,6 +1,6 @@
 {
     "name": "Process web helper",
-    "version": "1.5",
+    "version": "1.6",
     "manifest_version": 3,
     "description": "Block requests.",
     "background": {
