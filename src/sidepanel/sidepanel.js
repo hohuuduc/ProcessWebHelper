@@ -39,30 +39,25 @@ window.onload = async () => {
             copy.className = "";
             done.className = "swap";
 
-            let params = new URLSearchParams(new URL(url).search);
-            let programPath = url.split("/application/");
-            if (programPath.length > 1) {
-                programPath = programPath[1].split("/");
-                params = [["Aname", programPath[0]], ["Host", programPath[1]], ...params];
-            }
-            prms.innerHTML = "";
-            for (const param of params) {
+            const params = new URLSearchParams(new URL(url).search);
+            prms.innerHTML = ""; // Xóa các tham số cũ
+            for (const [key, value] of params.entries()) {
                 const item = document.createElement("div");
                 item.className = "param-item";
 
                 const keySpan = document.createElement("span");
                 keySpan.className = "param-key";
-                keySpan.textContent = param[0];
+                keySpan.textContent = key;
 
                 const valueSpan = document.createElement("span");
                 valueSpan.className = "param-value";
-                valueSpan.textContent = decodeURIComponent(param[1]);
+                valueSpan.textContent = decodeURIComponent(value);
 
                 item.appendChild(keySpan);
                 item.appendChild(valueSpan);
                 prms.appendChild(item);
             }
-            if (params.length > 0)
+            if (params.size > 0)
                 prms.style.visibility = "visible";
         }
     })
