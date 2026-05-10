@@ -10,6 +10,18 @@ function connect() {
     });
 }
 
+// Generic toggle helper for collapsible sections
+function setupToggle(toggleEl, contentEl, chevronEl, startCollapsed) {
+    if (startCollapsed) {
+        contentEl.classList.add("collapsed");
+        chevronEl.classList.add("collapsed");
+    }
+    toggleEl.addEventListener("click", () => {
+        contentEl.classList.toggle("collapsed");
+        chevronEl.classList.toggle("collapsed");
+    });
+}
+
 window.onload = async () => {
     connect();
     const store = await browser.storage.local.get("regex");
@@ -66,4 +78,37 @@ window.onload = async () => {
                 prms.style.visibility = "visible";
         }
     })
+
+    // Setup collapsible sections
+    setupToggle(
+        document.getElementById("filterToggle"),
+        document.getElementById("filterContent"),
+        document.getElementById("filterChevron"),
+        false // Url Filter starts expanded
+    );
+
+    setupToggle(
+        document.getElementById("shortcutToggle"),
+        document.getElementById("shortcutContent"),
+        document.getElementById("shortcutChevron"),
+        true // Shortcut starts collapsed
+    );
+
+    // Display current shortcut key for the extension action
+    const shortcutKeyEl = document.getElementById("shortcutKey");
+    const shortcutLink = document.getElementById("shortcutLink");
+
+    const commands = await browser.commands.getAll();
+    const actionCommand = commands.find(cmd => cmd.name === "_execute_action");
+    if (actionCommand && actionCommand.shortcut) {
+        shortcutKeyEl.textContent = actionCommand.shortcut;
+    } else {
+        shortcutKeyEl.textContent = "Not set";
+    }
+
+    // Open chrome://extensions/shortcuts in a new tab (chrome:// URLs require tabs.create)
+    shortcutLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        browser.tabs.create({ url: "chrome://extensions/shortcuts" });
+    });
 }

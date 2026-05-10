@@ -2,6 +2,7 @@
     outline: none;
     text-decoration: none;
     margin: 0;
+    box-sizing: border-box;
 }
 
 body {
@@ -10,41 +11,144 @@ body {
     max-width: 550px;
     height: 85vh;
     position: relative;
+    color: #333;
 }
 
-.title {
-    font-size: 30px;
-    margin-bottom: 10px;
-}
+/* --- Detail panel --- */
 
 .detail {
     border: solid 1px #ccc;
     border-radius: 13px;
-    padding: 10px;
+    padding: 0;
+    overflow: hidden;
 }
 
-.quote {
-    font-size: 20px;
-    margin-bottom: 30px;
+/* --- Collapsible section (shared pattern) --- */
+
+.section {
+    border-bottom: 1px solid #eee;
 }
 
-.option {
+.section:last-child {
+    border-bottom: none;
+}
+
+.section-header {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease;
 }
 
-.label {
-    min-width: 80px;
-    margin: auto 10px;
-    font-size: 15px;
+.section-header:hover {
+    background-color: #f7f7f7;
 }
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.section-title a {
+    display: inline-flex;
+    align-items: center;
+    color: #666;
+    transition: color 0.2s;
+}
+
+.section-title a:hover {
+    color: #0366d6;
+}
+
+.chevron {
+    transition: transform 0.25s ease;
+    color: #888;
+    flex-shrink: 0;
+}
+
+.chevron.collapsed {
+    transform: rotate(-90deg);
+}
+
+.section-content {
+    overflow: hidden;
+    max-height: 80px;
+    padding: 0 14px 10px;
+    transition: max-height 0.25s ease, opacity 0.25s ease, padding 0.25s ease;
+    opacity: 1;
+}
+
+.section-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* --- Input --- */
 
 input {
     font-size: 14px;
     width: 100%;
     border: solid 1px #ccc;
     border-radius: 6px;
-    padding: 5px 7px;
+    padding: 6px 8px;
+    transition: border-color 0.2s ease;
 }
+
+input:focus {
+    border-color: #0366d6;
+}
+
+input::placeholder {
+    color: #aaa;
+    font-size: 13px;
+}
+
+/* --- Shortcut row --- */
+
+.shortcut-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.shortcut-kbd {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-family: monospace;
+    color: #24292e;
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    box-shadow: inset 0 -1px 0 #d1d5db;
+    white-space: nowrap;
+}
+
+.shortcut-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #0366d6;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+}
+
+.shortcut-link:hover {
+    color: #0250a3;
+    text-decoration: underline;
+}
+
+/* --- URL container --- */
 
 .container {
     display: flex;
@@ -60,6 +164,7 @@ input {
     margin: auto 0;
     word-break: break-all;
     font-style: italic;
+    font-size: 13px;
 }
 
 .img {
@@ -82,14 +187,7 @@ input {
     transform: scale(0);
 }
 
-footer {
-    width: 100%;
-    position: absolute;
-    bottom: 40px;
-    display: flex;
-    flex-direction: row-reverse;
-    margin-top: 20px;
-}
+/* --- Params container --- */
 
 .params-container {
     margin-top: 10px;
@@ -126,6 +224,17 @@ footer {
     font-size: 13px;
     font-family: monospace;
     flex-grow: 1;
+}
+
+/* --- Footer --- */
+
+footer {
+    width: 100%;
+    position: absolute;
+    bottom: 40px;
+    display: flex;
+    flex-direction: row-reverse;
+    margin-top: 20px;
 }
 
 .repo-link {

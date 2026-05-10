@@ -1,6 +1,6 @@
 {
     "name": "Process web helper",
-    "version": "1.6",
+    "version": "1.6.2",
     "manifest_version": 3,
     "description": "Block requests.",
     "background": {
@@ -10,7 +10,9 @@
         "<all_urls>"
     ],
     "externally_connectable": {
-        "matches": ["<all_urls>"]
+        "matches": [
+            "<all_urls>"
+        ]
     },
     "permissions": [
         "declarativeNetRequest",
@@ -27,9 +29,7 @@
     },
     "commands": {
         "_execute_action": {
-            "suggested_key": {
-                "default": "Ctrl+B"
-            }
+            "description": "Open side panel"
         }
     },
     "icons": {
