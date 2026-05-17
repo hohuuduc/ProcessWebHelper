@@ -1,4 +1,6 @@
 const RULEID = 2
+const ALLOW_RULEID = 3
+const regex = "/menu/program";
 
 if (typeof browser === "undefined") {
   var browser = chrome;
@@ -36,9 +38,8 @@ browser.storage.onChanged.addListener((changes, areaName) => {
 // This is the core logic for updating the redirect rule.
 const handle = async () => {
   // Fetch all required data in parallel for efficiency.
-  const [{ isRun }, { regex }, tabs] = await Promise.all([
+  const [{ isRun }, tabs] = await Promise.all([
     browser.storage.session.get('isRun'),
-    browser.storage.local.get("regex"),
     browser.tabs.query({ active: true, lastFocusedWindow: true })
   ]);
 
@@ -48,22 +49,35 @@ const handle = async () => {
   // Persist the current tab's URL for the redirect logic.
   await browser.storage.session.set({ currentTab: newCurrentTab });
 
-  // If the extension is active and we have a tab and a regex, add the redirect rule.
+  // If the extension is active and we have a tab and a regex, add the rules.
   if (newCurrentTab && regex) {
     browser.declarativeNetRequest.updateDynamicRules({
-      addRules: [{
-        "id": RULEID,
-        "priority": 1,
-        "action": {
-          "type": "redirect",
-          "redirect": { "url": newCurrentTab }
+      addRules: [
+        {
+          "id": RULEID,
+          "priority": 1,
+          "action": {
+            "type": "redirect",
+            "redirect": { "url": newCurrentTab }
+          },
+          "condition": {
+            "urlFilter": regex,
+            "resourceTypes": ["main_frame"]
+          }
         },
-        "condition": {
-          "urlFilter": regex,
-          "resourceTypes": ["main_frame"]
+        {
+          "id": ALLOW_RULEID,
+          "priority": 2, // Mức ưu tiên cao hơn để ghi đè rule chặn
+          "action": {
+            "type": "allow" // Bỏ qua chặn/redirect
+          },
+          "condition": {
+            "urlFilter": "*processwebhelper=1*", // Nhận diện qua URL query param
+            "resourceTypes": ["main_frame"]
+          }
         }
-      }],
-      removeRuleIds: [RULEID]
+      ],
+      removeRuleIds: [RULEID, ALLOW_RULEID]
     }, () => {
       if (browser.runtime.lastError) {
         console.error("Error updating rule:", browser.runtime.lastError);
@@ -72,9 +86,9 @@ const handle = async () => {
       }
     })
   } else {
-    // Otherwise, ensure the rule is removed.
+    // Otherwise, ensure the rules are removed.
     browser.declarativeNetRequest.updateDynamicRules({
-      removeRuleIds: [RULEID]
+      removeRuleIds: [RULEID, ALLOW_RULEID]
     }, () => {
       if (browser.runtime.lastError) {
         console.error("Error removing rule:", browser.runtime.lastError);
@@ -87,12 +101,9 @@ const handle = async () => {
 
 browser.webRequest.onBeforeRedirect.addListener(
   async (e) => {
-    const [{ currentTab }, { regex }] = await Promise.all([
-      browser.storage.session.get('currentTab'),
-      browser.storage.local.get("regex")
-    ]);
+    const { currentTab } = await browser.storage.session.get('currentTab');
 
-    if (regex && currentTab && e.url.includes(regex)) {
+    if (currentTab === "" || (currentTab && e.url.includes(regex))) {
       if (e.redirectUrl === currentTab) {
         fetch(e.url)
         return

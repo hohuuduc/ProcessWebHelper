@@ -56,17 +56,6 @@ body {
     color: #333;
 }
 
-.section-title a {
-    display: inline-flex;
-    align-items: center;
-    color: #666;
-    transition: color 0.2s;
-}
-
-.section-title a:hover {
-    color: #0366d6;
-}
-
 .chevron {
     transition: transform 0.25s ease;
     color: #888;
@@ -249,4 +238,26 @@ footer {
 .repo-link:hover {
     color: #0366d6;
     text-decoration: underline;
+}
+
+/* --- Input group & Button --- */
+.input-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn {
+    padding: 6px 14px;
+    font-size: 14px;
+    border: solid 1px #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    background-color: #eee;
+    border-color: #0366d6;
 }

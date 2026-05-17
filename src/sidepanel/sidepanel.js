@@ -1,5 +1,3 @@
-const RULEID = 2;
-
 if (typeof browser === "undefined")
     var browser = chrome;
 
@@ -24,13 +22,6 @@ function setupToggle(toggleEl, contentEl, chevronEl, startCollapsed) {
 
 window.onload = async () => {
     connect();
-    const store = await browser.storage.local.get("regex");
-    const regex = document.getElementById("regex");
-    regex.value = store.regex ? store.regex : "";
-    regex.onchange = () => {
-        // Persist the regex filter in local storage so the service worker can access it.
-        browser.storage.local.set({ regex: regex.value });
-    }
 
     const copy = document.getElementById("copy");
     const done = document.getElementById("done");
@@ -79,22 +70,69 @@ window.onload = async () => {
         }
     })
 
-    // Setup collapsible sections
-    setupToggle(
-        document.getElementById("filterToggle"),
-        document.getElementById("filterContent"),
-        document.getElementById("filterChevron"),
-        false // Url Filter starts expanded
-    );
-
     setupToggle(
         document.getElementById("shortcutToggle"),
         document.getElementById("shortcutContent"),
         document.getElementById("shortcutChevron"),
-        true // Shortcut starts collapsed
+        true
     );
 
-    // Display current shortcut key for the extension action
+    setupToggle(
+        document.getElementById("codeToggle"),
+        document.getElementById("codeContent"),
+        document.getElementById("codeChevron"),
+        false
+    );
+
+    const submitDirectlyBtn = document.getElementById("submitDirectlyBtn");
+    const submitDebugBtn = document.getElementById("submitDebugBtn");
+    const codeInput = document.getElementById("codeInput");
+
+    const urlFilter = "/menu/program";
+
+    async function handleSubmit(isDebug) {
+        const code = codeInput.value.trim();
+
+        if (!code) return;
+
+        const tabs = await browser.tabs.query({ active: true, lastFocusedWindow: true });
+
+        if (tabs && tabs.length > 0 && tabs[0].url) {
+            try {
+                const currentUrl = new URL(tabs[0].url);
+                let fullBaseUrl = currentUrl.origin + currentUrl.pathname;
+
+                if (fullBaseUrl.endsWith('/') && urlFilter.startsWith('/')) {
+                    urlFilter = urlFilter.slice(1);
+                } else if (!fullBaseUrl.endsWith('/') && !urlFilter.startsWith('/') && urlFilter !== "") {
+                    fullBaseUrl += '/';
+                }
+
+                let targetUrl = `${fullBaseUrl}${urlFilter}?code=${encodeURIComponent(code)}`;
+
+                if (isDebug) {
+                    fetch(targetUrl);
+                } else {
+                    targetUrl += `&processwebhelper=1`;
+                    const [activeTab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
+                    if (!activeTab?.id || !activeTab?.url) return;
+                    browser.tabs.create({
+                        url: targetUrl,
+                        windowId: activeTab.windowId,
+                        index: activeTab.index + 1,
+                        openerTabId: activeTab.id,
+                        active: true
+                    });
+                }
+            } catch (err) {
+                console.error("Error: ", err);
+            }
+        }
+    }
+
+    submitDirectlyBtn.addEventListener("click", () => handleSubmit(false));
+    submitDebugBtn.addEventListener("click", () => handleSubmit(true));
+
     const shortcutKeyEl = document.getElementById("shortcutKey");
     const shortcutLink = document.getElementById("shortcutLink");
 
@@ -106,7 +144,6 @@ window.onload = async () => {
         shortcutKeyEl.textContent = "Not set";
     }
 
-    // Open chrome://extensions/shortcuts in a new tab (chrome:// URLs require tabs.create)
     shortcutLink.addEventListener("click", (e) => {
         e.preventDefault();
         browser.tabs.create({ url: "chrome://extensions/shortcuts" });
