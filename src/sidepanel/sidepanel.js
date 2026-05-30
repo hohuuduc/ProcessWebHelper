@@ -88,45 +88,44 @@ window.onload = async () => {
     const submitDebugBtn = document.getElementById("submitDebugBtn");
     const codeInput = document.getElementById("codeInput");
 
-    const urlFilter = "/menu/program";
+    const urlFilter = "menu/program";
 
     async function handleSubmit(isDebug) {
         const code = codeInput.value.trim();
-
+        
         if (!code) return;
 
-        const tabs = await browser.tabs.query({ active: true, lastFocusedWindow: true });
+        try {
+            const [tab] = await browser.tabs.query({
+                active: true,
+                lastFocusedWindow: true
+            });
 
-        if (tabs && tabs.length > 0 && tabs[0].url) {
-            try {
-                const currentUrl = new URL(tabs[0].url);
-                let fullBaseUrl = currentUrl.origin + currentUrl.pathname;
+            if (!tab?.url) return;
 
-                if (fullBaseUrl.endsWith('/') && urlFilter.startsWith('/')) {
-                    urlFilter = urlFilter.slice(1);
-                } else if (!fullBaseUrl.endsWith('/') && !urlFilter.startsWith('/') && urlFilter !== "") {
-                    fullBaseUrl += '/';
-                }
+            const { origin, pathname } = new URL(tab.url);
 
-                let targetUrl = `${fullBaseUrl}${urlFilter}?code=${encodeURIComponent(code)}`;
+            const baseUrl = `${origin}${pathname.replace(/\/$/, "")}`;
+            let targetUrl =
+                `${baseUrl}/${urlFilter}?code=${encodeURIComponent(code)}`;
 
-                if (isDebug) {
-                    fetch(targetUrl);
-                } else {
-                    targetUrl += `&processwebhelper=1`;
-                    const [activeTab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
-                    if (!activeTab?.id || !activeTab?.url) return;
-                    browser.tabs.create({
-                        url: targetUrl,
-                        windowId: activeTab.windowId,
-                        index: activeTab.index + 1,
-                        openerTabId: activeTab.id,
-                        active: true
-                    });
-                }
-            } catch (err) {
-                console.error("Error: ", err);
+            if (isDebug) {
+                fetch(targetUrl);
+                return;
             }
+
+            targetUrl += "&processwebhelper=1";
+
+            browser.tabs.create({
+                url: targetUrl,
+                windowId: tab.windowId,
+                index: tab.index + 1,
+                openerTabId: tab.id,
+                active: true
+            });
+
+        } catch (err) {
+            console.error("Error:", err);
         }
     }
 
